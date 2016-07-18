@@ -4052,6 +4052,10 @@
     "translation": "Encountered an error retrieving all the online/away statuses"
   },
   {
+    "id": "store.sql_status.get_online.app_error",
+    "translation": "Encountered an error retrieving all the online statuses"
+  },
+  {
     "id": "store.sql_status.get.app_error",
     "translation": "Encountered an error retrieving the status"
   },
