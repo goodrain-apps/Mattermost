@@ -44,26 +44,13 @@ var config = {
                 }
             },
             {
-                test: /node_modules\/mattermost\/client\.jsx?$/,
-                loader: 'babel',
-                query: {
-                    presets: ['react', 'es2015-webpack', 'stage-0'],
-                    plugins: ['transform-runtime'],
-                    cacheDirectory: DEV
-                }
-            },
-            {
-                test: /node_modules\/mattermost\/websocket_client\.jsx?$/,
-                loader: 'babel',
-                query: {
-                    presets: ['react', 'es2015-webpack', 'stage-0'],
-                    plugins: ['transform-runtime'],
-                    cacheDirectory: DEV
-                }
-            },
-            {
                 test: /\.json$/,
+                exclude: /manifest\.json$/,
                 loader: 'json'
+            },
+            {
+                test: /manifest\.json$/,
+                loader: 'file?name=files/[hash].[ext]'
             },
             {
                 test: /(node_modules|non_npm_dependencies)\/.+\.(js|jsx)$/,
@@ -104,7 +91,8 @@ var config = {
         new CopyWebpackPlugin([
             {from: 'images/emoji', to: 'emoji'},
             {from: 'images/logo-email.png', to: 'images'},
-            {from: 'images/circles.png', to: 'images'}
+            {from: 'images/circles.png', to: 'images'},
+            {from: 'images/favicon', to: 'images/favicon'}
         ]),
         new webpack.LoaderOptionsPlugin({
             minimize: !DEV,

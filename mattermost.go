@@ -105,6 +105,11 @@ func main() {
 	l4g.Info(utils.T("mattermost.working_dir"), pwd)
 	l4g.Info(utils.T("mattermost.config_file"), utils.FindConfigFile(flagConfigFile))
 
+	// Enable developer settings if this is a "dev" build
+	if model.BuildNumber == "dev" {
+		*utils.Cfg.ServiceSettings.EnableDeveloper = true
+	}
+
 	// Special case for upgrading the db to 3.0
 	// ADDED for 3.0 REMOVE for 3.4
 	cmdUpdateDb30()
@@ -363,6 +368,11 @@ type TeamForUpgrade struct {
 
 func setupClientTests() {
 	*utils.Cfg.TeamSettings.EnableOpenServer = true
+	*utils.Cfg.ServiceSettings.EnableCommands = false
+	*utils.Cfg.ServiceSettings.EnableOnlyAdminIntegrations = false
+	*utils.Cfg.ServiceSettings.EnableCustomEmoji = true
+	utils.Cfg.ServiceSettings.EnableIncomingWebhooks = false
+	utils.Cfg.ServiceSettings.EnableOutgoingWebhooks = false
 }
 
 func executeTestCommand(cmd *exec.Cmd) {
@@ -391,24 +401,11 @@ func runWebClientTests() {
 	executeTestCommand(cmd)
 }
 
-func runJavascriptClientTests() {
-	os.Chdir("../mattermost-driver-javascript")
-	cmd := exec.Command("npm", "test")
-	executeTestCommand(cmd)
-}
-
 func cmdRunClientTests() {
 	if flagCmdRunWebClientTests {
-		api.StartServer()
 		setupClientTests()
+		api.StartServer()
 		runWebClientTests()
-		api.StopServer()
-	}
-
-	if flagCmdRunJavascriptClientTests {
-		api.StartServer()
-		setupClientTests()
-		runJavascriptClientTests()
 		api.StopServer()
 	}
 }
